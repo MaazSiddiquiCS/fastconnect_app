@@ -1,0 +1,709 @@
+{
+  "users": {
+    "user_id_john": {
+      "email": "john.doe@example.com",
+      "accountStatus": "ACTIVE",
+      "roleType": "STUDENT",
+      "fullName": "John Doe",
+      "rollNumber": "2022CS001",
+      "department": "CS",
+      "batch": 2022,
+      "bio": "Passionate about AI and machine learning. Always looking for new projects!",
+      "profilePic": "https://example.com/profiles/john_profile.jpg",
+      "coverPic": "https://example.com/covers/john_cover.jpg",
+      "isFaculty": false
+    },
+    "user_id_jane": {
+      "email": "jane.smith@example.com",
+      "accountStatus": "ACTIVE",
+      "roleType": "STUDENT",
+      "fullName": "Jane Smith",
+      "rollNumber": "2023EE005",
+      "department": "EE",
+      "batch": 2023,
+      "bio": "Electrical Engineering student with a keen interest in sustainable energy solutions.",
+      "profilePic": "https://example.com/profiles/jane_profile.jpg",
+      "coverPic": "https://example.com/covers/jane_cover.jpg",
+      "isFaculty": false
+    },
+    "user_id_prof_alan": {
+      "email": "alan.smith@university.edu",
+      "accountStatus": "ACTIVE",
+      "roleType": "FACULTY",
+      "fullName": "Professor Alan Smith",
+      "rollNumber": null,
+      "department": "CS",
+      "batch": null,
+      "bio": "Head of Computer Science Department. Research interests in distributed systems and cloud computing.",
+      "profilePic": "https://example.com/profiles/prof_alan_profile.jpg",
+      "coverPic": "https://example.com/covers/prof_alan_cover.jpg",
+      "isFaculty": true,
+      "facultyDesignation": "PROFESSOR",
+      "isFacultyVerified": true
+    },
+    "user_id_alice": {
+      "email": "alice.wonder@example.com",
+      "accountStatus": "ACTIVE",
+      "roleType": "STUDENT",
+      "fullName": "Alice Wonder",
+      "rollNumber": "2022ME010",
+      "department": "ME",
+      "batch": 2022,
+      "bio": "Mechanical Engineering student, aspiring roboticist.",
+      "profilePic": "https://example.com/profiles/alice_profile.jpg",
+      "coverPic": "https://example.com/covers/alice_cover.jpg",
+      "isFaculty": false
+    },
+    "user_id_admin_mod": {
+      "email": "admin.mod@university.edu",
+      "accountStatus": "ACTIVE",
+      "roleType": "ADMIN",
+      "fullName": "Admin Moderator",
+      "rollNumber": null,
+      "department": null,
+      "batch": null,
+      "bio": "Platform administrator and content moderator.",
+      "profilePic": "https://example.com/profiles/admin_profile.jpg",
+      "coverPic": null,
+      "isFaculty": false
+    }
+  },
+  "authTokens": {
+    "auth_token_001": {
+      "refreshToken": "some_long_jwt_refresh_token_string_john",
+      "issuedAt": "2023-10-25T10:00:00Z",
+      "expiresIn": "2023-11-25T10:00:00Z",
+      "revoked": false,
+      "userId": "user_id_john"
+    },
+    "auth_token_002": {
+      "refreshToken": "another_jwt_refresh_token_string_jane",
+      "issuedAt": "2023-10-26T11:30:00Z",
+      "expiresIn": "2023-11-26T11:30:00Z",
+      "revoked": false,
+      "userId": "user_id_jane"
+    },
+    "auth_token_003": {
+      "refreshToken": "revoked_jwt_refresh_token_string_alan",
+      "issuedAt": "2023-09-01T09:00:00Z",
+      "expiresIn": "2023-10-01T09:00:00Z",
+      "revoked": true,
+      "userId": "user_id_prof_alan"
+    }
+  },
+  "posts": {
+    "post_id_101": {
+      "content": "Excited to share my new project on real-time object detection using TensorFlow. Check out the demo!",
+      "mediaUrl": "https://example.com/posts/object_detection_demo.mp4",
+      "isPinned": false,
+      "createdAt": "2023-10-26T10:00:00Z",
+      "updatedAt": "2023-10-26T10:00:00Z",
+      "userId": "user_id_john",
+      "authorFullName": "John Doe",
+      "authorProfilePic": "https://example.com/profiles/john_profile.jpg",
+      "commentCount": 2,
+      "reactionCount": 15
+    },
+    "post_id_102": {
+      "content": "Looking for collaborators for an upcoming sustainable energy hackathon! Let's innovate for a greener future.",
+      "mediaUrl": null,
+      "isPinned": false,
+      "createdAt": "2023-10-27T14:30:00Z",
+      "updatedAt": "2023-10-27T14:30:00Z",
+      "userId": "user_id_jane",
+      "authorFullName": "Jane Smith",
+      "authorProfilePic": "https://example.com/profiles/jane_profile.jpg",
+      "commentCount": 1,
+      "reactionCount": 8
+    },
+    "post_id_103": {
+      "content": "Published a new research paper on 'Optimizing Cloud Resource Allocation for Distributed Microservices'. Find the link in my bio.",
+      "mediaUrl": "https://example.com/posts/research_paper_thumbnail.png",
+      "isPinned": true,
+      "createdAt": "2023-10-28T09:15:00Z",
+      "updatedAt": "2023-10-28T09:15:00Z",
+      "userId": "user_id_prof_alan",
+      "authorFullName": "Professor Alan Smith",
+      "authorProfilePic": "https://example.com/profiles/prof_alan_profile.jpg",
+      "commentCount": 1,
+      "reactionCount": 20
+    },
+    "post_id_104": {
+      "content": "Excited to represent the Mechanical Engineering department at the upcoming inter-university robotics competition!",
+      "mediaUrl": "https://example.com/posts/robotics_announcement.jpg",
+      "isPinned": false,
+      "createdAt": "2023-10-29T11:00:00Z",
+      "updatedAt": "2023-10-29T11:00:00Z",
+      "userId": "user_id_alice",
+      "authorFullName": "Alice Wonder",
+      "authorProfilePic": "https://example.com/profiles/alice_profile.jpg",
+      "commentCount": 0,
+      "reactionCount": 5
+    }
+  },
+  "comments": {
+    "comment_id_001": {
+      "content": "This is amazing, John! Can you share the code on GitHub?",
+      "createdAt": "2023-10-26T10:15:00Z",
+      "updatedAt": "2023-10-26T10:15:00Z",
+      "postId": "post_id_101",
+      "userId": "user_id_jane",
+      "authorFullName": "Jane Smith"
+    },
+    "comment_id_002": {
+      "content": "Great work, looks very promising!",
+      "createdAt": "2023-10-26T10:30:00Z",
+      "updatedAt": "2023-10-26T10:30:00Z",
+      "postId": "post_id_101",
+      "userId": "user_id_prof_alan",
+      "authorFullName": "Professor Alan Smith"
+    },
+    "comment_id_003": {
+      "content": "I'm in! Let's connect and discuss ideas.",
+      "createdAt": "2023-10-27T15:00:00Z",
+      "updatedAt": "2023-10-27T15:00:00Z",
+      "postId": "post_id_102",
+      "userId": "user_id_john",
+      "authorFullName": "John Doe"
+    },
+    "comment_id_004": {
+      "content": "Congratulations, Professor! Will definitely read this.",
+      "createdAt": "2023-10-28T10:00:00Z",
+      "updatedAt": "2023-10-28T10:00:00Z",
+      "postId": "post_id_103",
+      "userId": "user_id_jane",
+      "authorFullName": "Jane Smith"
+    }
+  },
+  "postReactions": {
+    "reaction_id_p001": {
+      "reactionType": "LIKE",
+      "createdAt": "2023-10-26T10:05:00Z",
+      "userId": "user_id_jane",
+      "postId": "post_id_101"
+    },
+    "reaction_id_p002": {
+      "reactionType": "LOVE",
+      "createdAt": "2023-10-26T10:10:00Z",
+      "userId": "user_id_prof_alan",
+      "postId": "post_id_101"
+    },
+    "reaction_id_p003": {
+      "reactionType": "LIKE",
+      "createdAt": "2023-10-27T14:40:00Z",
+      "userId": "user_id_john",
+      "postId": "post_id_102"
+    },
+    "reaction_id_p004": {
+      "reactionType": "CELEBRATE",
+      "createdAt": "2023-10-28T09:30:00Z",
+      "userId": "user_id_jane",
+      "postId": "post_id_103"
+    }
+  },
+  "reels": {
+    "reel_id_201": {
+      "videoUrl": "https://example.com/reels/my_coding_setup.mp4",
+      "caption": "My cozy coding corner! #devlife #setupgoals",
+      "duration": 15.5,
+      "views": 250,
+      "likesCount": 50,
+      "isPublic": true,
+      "createdAt": "2023-10-20T16:00:00Z",
+      "userId": "user_id_john",
+      "authorFullName": "John Doe"
+    },
+    "reel_id_202": {
+      "videoUrl": "https://example.com/reels/campus_tour.mp4",
+      "caption": "A quick tour of our beautiful campus on a sunny day! ☀️",
+      "duration": 25.0,
+      "views": 300,
+      "likesCount": 70,
+      "isPublic": true,
+      "createdAt": "2023-10-22T12:00:00Z",
+      "userId": "user_id_jane",
+      "authorFullName": "Jane Smith"
+    },
+    "reel_id_203": {
+      "videoUrl": "https://example.com/reels/research_highlights.mp4",
+      "caption": "Highlights from recent lab experiments in robotics. Fascinating progress!",
+      "duration": 45.2,
+      "views": 400,
+      "likesCount": 90,
+      "isPublic": true,
+      "createdAt": "2023-10-24T10:00:00Z",
+      "userId": "user_id_prof_alan",
+      "authorFullName": "Professor Alan Smith"
+    }
+  },
+  "reelComments": {
+    "reel_comment_id_001": {
+      "content": "Love the monitor setup!",
+      "createdAt": "2023-10-20T16:10:00Z",
+      "reelId": "reel_id_201",
+      "userId": "user_id_jane",
+      "authorFullName": "Jane Smith"
+    },
+    "reel_comment_id_002": {
+      "content": "Campus looks amazing! Which building is that?",
+      "createdAt": "2023-10-22T12:15:00Z",
+      "reelId": "reel_id_202",
+      "userId": "user_id_john",
+      "authorFullName": "John Doe"
+    },
+    "reel_comment_id_003": {
+      "content": "Incredible work, Professor!",
+      "createdAt": "2023-10-24T10:30:00Z",
+      "reelId": "reel_id_203",
+      "userId": "user_id_john",
+      "authorFullName": "John Doe"
+    }
+  },
+  "reelReactions": {
+    "reel_reaction_id_001": {
+      "reactionType": "LOVE",
+      "createdAt": "2023-10-20T16:05:00Z",
+      "reelId": "reel_id_201",
+      "userId": "user_id_jane"
+    },
+    "reel_reaction_id_002": {
+      "reactionType": "LIKE",
+      "createdAt": "2023-10-22T12:05:00Z",
+      "reelId": "reel_id_202",
+      "userId": "user_id_prof_alan"
+    },
+    "reel_reaction_id_003": {
+      "reactionType": "CELEBRATE",
+      "createdAt": "2023-10-24T10:10:00Z",
+      "reelId": "reel_id_203",
+      "userId": "user_id_john"
+    }
+  },
+  "connections": {
+    "connection_id_001": {
+      "connectedAt": "2023-10-20T09:00:00Z",
+      "user1Id": "user_id_john",
+      "user2Id": "user_id_jane"
+    },
+    "connection_id_002": {
+      "connectedAt": "2023-10-21T11:00:00Z",
+      "user1Id": "user_id_alice",
+      "user2Id": "user_id_prof_alan"
+    },
+    "connection_id_003": {
+      "connectedAt": "2023-10-22T14:00:00Z",
+      "user1Id": "user_id_john",
+      "user2Id": "user_id_prof_alan"
+    }
+  },
+  "connectionRequests": {
+    "c_req_001": {
+      "status": "PENDING",
+      "createdAt": "2023-10-25T08:00:00Z",
+      "respondedAt": null,
+      "senderId": "user_id_alice",
+      "receiverId": "user_id_john"
+    },
+    "c_req_002": {
+      "status": "ACCEPTED",
+      "createdAt": "2023-10-24T11:20:00Z",
+      "respondedAt": "2023-10-24T15:00:00Z",
+      "senderId": "user_id_jane",
+      "receiverId": "user_id_prof_alan"
+    },
+    "c_req_003": {
+      "status": "PENDING",
+      "createdAt": "2023-10-28T16:00:00Z",
+      "respondedAt": null,
+      "senderId": "user_id_prof_alan",
+      "receiverId": "user_id_john"
+    }
+  },
+  "conversations": {
+    "conv_id_001": {
+      "type": "ONE_TO_ONE",
+      "createdAt": "2023-10-20T09:10:00Z",
+      "participantIds": ["user_id_john", "user_id_jane"]
+    },
+    "conv_id_002": {
+      "type": "ONE_TO_ONE",
+      "createdAt": "2023-10-22T14:10:00Z",
+      "participantIds": ["user_id_john", "user_id_prof_alan"]
+    },
+    "conv_id_003": {
+      "type": "GROUP",
+      "createdAt": "2023-10-25T10:00:00Z",
+      "participantIds": ["user_id_john", "user_id_jane", "user_id_alice"]
+    }
+  },
+  "messages": {
+    "msg_id_001": {
+      "content": "Hey Jane, nice to connect!",
+      "sentAt": "2023-10-20T09:11:00Z",
+      "seen": true,
+      "conversationId": "conv_id_001",
+      "senderId": "user_id_john"
+    },
+    "msg_id_002": {
+      "content": "You too, John! How's your AI project going?",
+      "sentAt": "2023-10-20T09:12:00Z",
+      "seen": true,
+      "conversationId": "conv_id_001",
+      "senderId": "user_id_jane"
+    },
+    "msg_id_003": {
+      "content": "Professor, I had a question about the latest paper.",
+      "sentAt": "2023-10-28T10:05:00Z",
+      "seen": false,
+      "conversationId": "conv_id_002",
+      "senderId": "user_id_john"
+    },
+    "msg_id_004": {
+      "content": "Hi everyone, planning for the group project meeting tomorrow.",
+      "sentAt": "2023-10-25T10:05:00Z",
+      "seen": true,
+      "conversationId": "conv_id_003",
+      "senderId": "user_id_alice"
+    }
+  },
+  "notifications": {
+    "notif_id_001": {
+      "referenceId": "post_id_101",
+      "type": "NEW_POST_COMMENT",
+      "message": "Jane Smith commented on your post 'Excited to share...'",
+      "isRead": false,
+      "createdAt": "2023-10-26T10:15:00Z",
+      "userId": "user_id_john"
+    },
+    "notif_id_002": {
+      "referenceId": "connection_id_001",
+      "type": "NEW_CONNECTION",
+      "message": "You are now connected with John Doe.",
+      "isRead": true,
+      "createdAt": "2023-10-20T09:00:00Z",
+      "userId": "user_id_jane"
+    },
+    "notif_id_003": {
+      "referenceId": "event_id_hackathon",
+      "type": "EVENT_REMINDER",
+      "message": "Reminder: Annual Innovation Hackathon starts tomorrow!",
+      "isRead": false,
+      "createdAt": "2023-11-14T17:00:00Z",
+      "userId": "user_id_john"
+    }
+  },
+  "events": {
+    "event_id_hackathon": {
+      "title": "Annual Innovation Hackathon 2023",
+      "description": "A 24-hour coding marathon to solve real-world problems with creative tech solutions. Prizes for top teams!",
+      "posterUrl": "https://example.com/events/hackathon_poster.jpg",
+      "venue": "Innovation Lab, Block A",
+      "startTime": "2023-11-15T09:00:00Z",
+      "endTime": "2023-11-16T09:00:00Z",
+      "createdAt": "2023-09-01T10:00:00Z",
+      "updatedAt": "2023-09-01T10:00:00Z",
+      "createdById": "user_id_prof_alan",
+      "societyId": "society_id_csclub"
+    },
+    "event_id_eco_drive": {
+      "title": "Campus Green Drive",
+      "description": "Join us for a campus-wide cleanup and tree planting initiative to make our university greener.",
+      "posterUrl": "https://example.com/events/green_drive_poster.jpg",
+      "venue": "University Gardens",
+      "startTime": "2023-11-20T10:00:00Z",
+      "endTime": "2023-11-20T13:00:00Z",
+      "createdAt": "2023-10-05T14:00:00Z",
+      "updatedAt": "2023-10-05T14:00:00Z",
+      "createdById": "user_id_jane",
+      "societyId": "society_id_greenearth"
+    },
+    "event_id_drama_fest": {
+      "title": "Annual Drama Festival",
+      "description": "A showcase of theatrical talent from across the university, featuring original plays and classic adaptations.",
+      "posterUrl": "https://example.com/events/drama_fest_poster.jpg",
+      "venue": "University Auditorium",
+      "startTime": "2023-12-05T18:30:00Z",
+      "endTime": "2023-12-08T22:00:00Z",
+      "createdAt": "2023-09-10T11:00:00Z",
+      "updatedAt": "2023-09-10T11:00:00Z",
+      "createdById": "user_id_prof_alan",
+      "societyId": "society_id_artscircle"
+    },
+    "event_id_robotics_comp": {
+      "title": "Inter-University Robotics Competition",
+      "description": "Our university hosts the annual robotics challenge. Come support our teams!",
+      "posterUrl": "https://example.com/events/robotics_comp.jpg",
+      "venue": "Sports Arena",
+      "startTime": "2024-03-10T09:00:00Z",
+      "endTime": "2024-03-10T17:00:00Z",
+      "createdAt": "2023-10-15T10:00:00Z",
+      "updatedAt": "2023-10-15T10:00:00Z",
+      "createdById": "user_id_alice",
+      "societyId": "society_id_robotics"
+    }
+  },
+  "eventRegistrations": {
+    "reg_id_001": {
+      "status": "CONFIRMED",
+      "registeredAt": "2023-11-01T10:00:00Z",
+      "eventId": "event_id_hackathon",
+      "userId": "user_id_john"
+    },
+    "reg_id_002": {
+      "status": "PENDING",
+      "registeredAt": "2023-11-02T11:00:00Z",
+      "eventId": "event_id_hackathon",
+      "userId": "user_id_jane"
+    },
+    "reg_id_003": {
+      "status": "CONFIRMED",
+      "registeredAt": "2023-11-01T10:30:00Z",
+      "eventId": "event_id_eco_drive",
+      "userId": "user_id_john"
+    },
+    "reg_id_004": {
+      "status": "CONFIRMED",
+      "registeredAt": "2024-02-15T09:00:00Z",
+      "eventId": "event_id_robotics_comp",
+      "userId": "user_id_john"
+    }
+  },
+  "societies": {
+    "society_id_csclub": {
+      "societyName": "University CS Club",
+      "logo": "https://example.com/logos/csclub_logo.png",
+      "coverPic": "https://example.com/covers/csclub_cover.jpg",
+      "description": "Fostering a community for Computer Science enthusiasts through workshops, hackathons, and talks.",
+      "category": "ACADEMIC",
+      "verified": true
+    },
+    "society_id_greenearth": {
+      "societyName": "Green Earth Initiative",
+      "logo": "https://example.com/logos/greenearth_logo.png",
+      "coverPic": "https://example.com/covers/greenearth_cover.jpg",
+      "description": "Promoting environmental awareness and sustainability on campus and beyond.",
+      "category": "ENVIRONMENTAL",
+      "verified": true
+    },
+    "society_id_artscircle": {
+      "societyName": "Arts & Culture Circle",
+      "logo": "https://example.com/logos/artscircle_logo.png",
+      "coverPic": "https://example.com/covers/artscircle_cover.jpg",
+      "description": "Celebrating diverse artistic expressions and cultural heritage within the university.",
+      "category": "ARTS_CULTURE",
+      "verified": true
+    },
+    "society_id_robotics": {
+      "societyName": "Robotics Enthusiasts Society",
+      "logo": "https://example.com/logos/robotics_logo.png",
+      "coverPic": "https://example.com/covers/robotics_cover.jpg",
+      "description": "Dedicated to the study and practical application of robotics and automation.",
+      "category": "TECHNICAL",
+      "verified": true
+    }
+  },
+  "societyMembership": {
+    "sm_id_001": {
+      "societyRole": "MEMBER",
+      "joinedAt": "2023-01-01T09:00:00Z",
+      "active": true,
+      "societyId": "society_id_csclub",
+      "userId": "user_id_john"
+    },
+    "sm_id_002": {
+      "societyRole": "PRESIDENT",
+      "joinedAt": "2022-09-01T10:00:00Z",
+      "active": true,
+      "societyId": "society_id_greenearth",
+      "userId": "user_id_jane"
+    },
+    "sm_id_003": {
+      "societyRole": "MEMBER",
+      "joinedAt": "2023-01-15T11:00:00Z",
+      "active": true,
+      "societyId": "society_id_csclub",
+      "userId": "user_id_prof_alan"
+    },
+    "sm_id_004": {
+      "societyRole": "VICE_PRESIDENT",
+      "joinedAt": "2023-02-01T09:30:00Z",
+      "active": true,
+      "societyId": "society_id_robotics",
+      "userId": "user_id_alice"
+    }
+  },
+  "societyFollowers": {
+    "sf_id_001": {
+      "followedAt": "2023-02-01T09:00:00Z",
+      "societyId": "society_id_csclub",
+      "userId": "user_id_jane"
+    },
+    "sf_id_002": {
+      "followedAt": "2023-03-01T10:00:00Z",
+      "societyId": "society_id_greenearth",
+      "userId": "user_id_john"
+    },
+    "sf_id_003": {
+      "followedAt": "2023-04-01T11:00:00Z",
+      "societyId": "society_id_artscircle",
+      "userId": "user_id_john"
+    },
+    "sf_id_004": {
+      "followedAt": "2023-03-10T10:00:00Z",
+      "societyId": "society_id_robotics",
+      "userId": "user_id_john"
+    }
+  },
+  "facultyFollowers": {
+    "ff_id_001": {
+      "followedAt": "2023-05-01T12:00:00Z",
+      "userId": "user_id_john",
+      "facultyId": "user_id_prof_alan"
+    },
+    "ff_id_002": {
+      "followedAt": "2023-05-05T13:00:00Z",
+      "userId": "user_id_jane",
+      "facultyId": "user_id_prof_alan"
+    },
+    "ff_id_003": {
+      "followedAt": "2023-05-10T14:00:00Z",
+      "userId": "user_id_alice",
+      "facultyId": "user_id_prof_alan"
+    }
+  },
+  "flags": {
+    "flag_id_001": {
+      "targetType": "POST",
+      "targetId": "post_id_102",
+      "flagReason": "MISINFORMATION",
+      "flagStatus": "PENDING",
+      "createdAt": "2023-10-27T16:00:00Z",
+      "resolvedAt": null,
+      "flaggedBy": "user_id_prof_alan"
+    },
+    "flag_id_002": {
+      "targetType": "COMMENT",
+      "targetId": "comment_id_001",
+      "flagReason": "SPAM",
+      "flagStatus": "RESOLVED",
+      "createdAt": "2023-10-26T10:45:00Z",
+      "resolvedAt": "2023-10-26T11:00:00Z",
+      "flaggedBy": "user_id_jane"
+    },
+    "flag_id_003": {
+      "targetType": "REEL",
+      "targetId": "reel_id_201",
+      "flagReason": "INAPPROPRIATE_CONTENT",
+      "flagStatus": "PENDING",
+      "createdAt": "2023-10-21T09:00:00Z",
+      "resolvedAt": null,
+      "flaggedBy": "user_id_admin_mod"
+    }
+  },
+  "reports": {
+    "report_id_001": {
+      "reportedItemType": "POST",
+      "reportedItemId": "post_id_102",
+      "moderationAction": "REVIEW_NEEDED",
+      "actionDetails": "Post contains unverified claims about energy efficiency.",
+      "moderationTime": "2023-10-27T16:30:00Z",
+      "moderatorId": "user_id_admin_mod"
+    },
+    "report_id_002": {
+      "reportedItemType": "COMMENT",
+      "reportedItemId": "comment_id_001",
+      "moderationAction": "DELETED",
+      "actionDetails": "Comment was found to be promotional spam.",
+      "moderationTime": "2023-10-26T11:00:00Z",
+      "moderatorId": "user_id_admin_mod"
+    },
+    "report_id_003": {
+      "reportedItemType": "REEL",
+      "reportedItemId": "reel_id_201",
+      "moderationAction": "REVIEW_NEEDED",
+      "actionDetails": "User reported reel for containing copyrighted music.",
+      "moderationTime": "2023-10-21T09:30:00Z",
+      "moderatorId": "user_id_admin_mod"
+    }
+  },
+  "flagReportLinks": {
+    "link_id_001": {
+      "flagId": "flag_id_001",
+      "reportId": "report_id_001"
+    },
+    "link_id_002": {
+      "flagId": "flag_id_002",
+      "reportId": "report_id_002"
+    },
+    "link_id_003": {
+      "flagId": "flag_id_003",
+      "reportId": "report_id_003"
+    }
+  },
+  "auditLogs": {
+    "log_id_001": {
+      "actionType": "POST_CREATED",
+      "entityType": "POST",
+      "entityId": "post_id_101",
+      "actionPerformedAt": "2023-10-26T10:00:00Z",
+      "actionUserId": "user_id_john"
+    },
+    "log_id_002": {
+      "actionType": "USER_LOGIN",
+      "entityType": "USER",
+      "entityId": "user_id_jane",
+      "actionPerformedAt": "2023-10-27T08:00:00Z",
+      "actionUserId": "user_id_jane"
+    },
+    "log_id_003": {
+      "actionType": "EVENT_UPDATED",
+      "entityType": "EVENT",
+      "entityId": "event_id_hackathon",
+      "actionPerformedAt": "2023-10-28T10:00:00Z",
+      "actionUserId": "user_id_prof_alan"
+    },
+    "log_id_004": {
+      "actionType": "FLAG_RESOLVED",
+      "entityType": "FLAG",
+      "entityId": "flag_id_002",
+      "actionPerformedAt": "2023-10-26T11:00:00Z",
+      "actionUserId": "user_id_admin_mod"
+    }
+  },
+  "hashtags": {
+    "hashtag_ai": {
+      "tag": "AI"
+    },
+    "hashtag_sustainability": {
+      "tag": "Sustainability"
+    },
+    "hashtag_cloud": {
+      "tag": "CloudComputing"
+    },
+    "hashtag_robotics": {
+      "tag": "Robotics"
+    }
+  },
+  "postHashtags": {
+    "ph_id_001": {
+      "postId": "post_id_101",
+      "hashtagId": "hashtag_ai"
+    },
+    "ph_id_002": {
+      "postId": "post_id_102",
+      "hashtagId": "hashtag_sustainability"
+    },
+    "ph_id_003": {
+      "postId": "post_id_103",
+      "hashtagId": "hashtag_cloud"
+    },
+    "ph_id_004": {
+      "postId": "post_id_104",
+      "hashtagId": "hashtag_robotics"
+    },
+    "ph_id_005": {
+      "postId": "post_id_101",
+      "hashtagId": "hashtag_cloud"
+    }
+  }
+}
