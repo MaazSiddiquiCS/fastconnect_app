@@ -14,6 +14,15 @@ import '../../domain/auth/usecases/login.dart';
 import '../../domain/auth/usecases/logout.dart';
 import '../../domain/auth/usecases/get_logged_in_user.dart';
 import '../../domain/auth/usecases/register.dart';
+// Feed imports
+import '../../data/feed/datasources/feed_remote_data_source.dart';
+import '../../data/feed/repositories/feed_repository_impl.dart';
+import '../../domain/feed/repositories/feed_repository.dart';
+import '../../domain/feed/usecases/get_feed_posts.dart';
+import '../../domain/feed/usecases/like_post.dart';
+import '../../domain/feed/usecases/unlike_post.dart';
+import '../../domain/feed/usecases/comment_on_post.dart';
+import '../../presentation/feed/bloc/feed_bloc.dart';
 // import '../database/app_database.dart'; // REMOVED: No longer using sqflite
 import '../network/api_client.dart';
 import '../utils/constants.dart';
@@ -72,6 +81,25 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton<GetLoggedInUser>(() => GetLoggedInUser(locator<AuthRepository>()));
   locator.registerLazySingleton<Register>(() => Register(locator<AuthRepository>()));
 
+  // Feed Data Sources
+  locator.registerLazySingleton<FeedRemoteDataSource>(
+    () => FeedRemoteDataSourceImpl(firestore: locator<FirebaseFirestore>()),
+  );
+
+  // Feed Repositories
+  locator.registerLazySingleton<FeedRepository>(
+    () {
+      final impl = FeedRepositoryImpl(remoteDataSource: locator<FeedRemoteDataSource>());
+      return impl as FeedRepository;
+    },
+  );
+
+  // Feed Use Cases
+  locator.registerLazySingleton<GetFeedPosts>(() => GetFeedPosts(locator<FeedRepository>()));
+  locator.registerLazySingleton<LikePost>(() => LikePost(locator<FeedRepository>()));
+  locator.registerLazySingleton<UnlikePost>(() => UnlikePost(locator<FeedRepository>()));
+  locator.registerLazySingleton<CommentOnPost>(() => CommentOnPost(locator<FeedRepository>()));
+
   // ---------------- Bloc ----------------
   locator.registerFactory<AuthBloc>(() => AuthBloc(
         loginUseCase: locator<Login>(),
@@ -79,4 +107,12 @@ Future<void> setupLocator() async {
         getUserUseCase: locator<GetLoggedInUser>(),
         registerUseCase: locator<Register>()
       ));
+
+  // Feed Bloc
+  locator.registerFactory<FeedBloc>(() => FeedBloc(
+    getFeedPosts: locator<GetFeedPosts>(),
+    likePost: locator<LikePost>(),
+    unlikePost: locator<UnlikePost>(),
+    commentOnPost: locator<CommentOnPost>(),
+  ));
 }
