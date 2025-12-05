@@ -25,6 +25,33 @@ class FeedPost extends Equatable {
     required this.createdAt,
   });
 
+  // --- YE FUNCTION ADD KIYA HAI JO ERROR FIX KAREGA ---
+  factory FeedPost.fromMap(Map<String, dynamic> map) {
+    return FeedPost(
+      // ?? '' ka matlab hai agar value null ho to empty string kardo
+      id: map['id'] ?? '', 
+      userId: map['userId'] ?? '',
+      username: map['username'] ?? 'Unknown User',
+      
+      // Aksar image null hoti hai, isliye yahan check lagaya hai
+      userImage: map['userImage'] ?? '', 
+      postImage: map['postImage'] ?? '',
+      
+      // Caption bhi aksar null hota hai
+      caption: map['caption'] ?? '', 
+      
+      // Integers ke liye 0 default value dedi
+      likes: map['likes']?.toInt() ?? 0,
+      comments: map['comments']?.toInt() ?? 0,
+      
+      // Date ko safely parse kar rahe hain
+      createdAt: map['createdAt'] != null 
+          ? DateTime.tryParse(map['createdAt']) ?? DateTime.now() 
+          : DateTime.now(),
+    );
+  }
+  // ----------------------------------------------------
+
   FeedPost copyWith({
     String? id,
     String? userId,
@@ -50,14 +77,14 @@ class FeedPost extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    userId,
-    username,
-    userImage,
-    postImage,
-    caption,
-    likes,
-    comments,
-    createdAt,
-  ];
+        id,
+        userId,
+        username,
+        userImage,
+        postImage,
+        caption,
+        likes,
+        comments,
+        createdAt,
+      ];
 }
