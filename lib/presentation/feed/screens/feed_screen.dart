@@ -101,15 +101,21 @@ class _FeedScreenState extends State<FeedScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          // ✅ FIX: Pehle current bloc ko variable main lo
+          final feedBloc = context.read<FeedBloc>();
+
           // Navigate to upload screen
-          // Note: You'll need to pass user info - for now using placeholder values
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const UploadPostScreen(
-                userId: 'current_user_id',
-                username: 'Current User',
-                userImage: 'https://via.placeholder.com/150',
+              // ✅ FIX: BlocProvider.value use karo taake naye page ko bloc mil jaye
+              builder: (_) => BlocProvider.value(
+                value: feedBloc,
+                child: const UploadPostScreen(
+                  userId: 'current_user_id',
+                  username: 'Current User',
+                  userImage: 'https://via.placeholder.com/150',
+                ),
               ),
             ),
           );

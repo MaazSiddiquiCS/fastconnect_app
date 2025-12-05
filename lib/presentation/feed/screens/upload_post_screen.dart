@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart'; // ✅ Ye zaroori hai Web check karne ke liye
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -86,6 +87,7 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error uploading image: $e')),
         );
+        setState(() => _isLoading = false);
       }
     }
   }
@@ -204,12 +206,21 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: Image.file(
-                        File(_pickedImage!.path),
-                        height: 250,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
+                      child: kIsWeb
+                          // ✅ WEB FIX: Agar Web hai to Network image use karo (Blob URL)
+                          ? Image.network(
+                              _pickedImage!.path,
+                              height: 250,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            )
+                          // ✅ MOBILE FIX: Agar Mobile hai to File use karo
+                          : Image.file(
+                              File(_pickedImage!.path),
+                              height: 250,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
                     ),
                     Positioned(
                       top: 8,
