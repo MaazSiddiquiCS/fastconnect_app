@@ -1,16 +1,20 @@
-// lib/core/di/service_locator.dart
 import 'package:get_it/get_it.dart';
-import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart'; // NEW IMPORT
+
 import '../../data/auth/datasources/auth_local_data_source.dart';
-import '../../data/auth/datasources/auth_mock_data_source.dart';
 import '../../data/auth/datasources/auth_remote_data_source.dart';
+import '../../data/auth/datasources/user_remote_data_source.dart';
+// import '../../data/user/datasources/user_remote_data_source.dart'; // NEW
 import '../../data/auth/repositories/auth_repository_impl.dart';
 import '../../domain/auth/repositories/auth_repository.dart';
 import '../../domain/auth/usecases/login.dart';
 import '../../domain/auth/usecases/logout.dart';
 import '../../domain/auth/usecases/get_logged_in_user.dart';
 import '../../domain/auth/usecases/register.dart';
-import '../database/app_database.dart';
+// import '../database/app_database.dart'; // REMOVED: No longer using sqflite
 import '../network/api_client.dart';
 import '../utils/constants.dart';
 import '../../presentation/auth/bloc/auth_bloc.dart';
@@ -18,27 +22,47 @@ import '../../presentation/auth/bloc/auth_bloc.dart';
 final locator = GetIt.instance;
 
 Future<void> setupLocator() async {
-  // Use constant from constants.dart for consistency
-locator.registerLazySingleton<AppDatabase>(() => AppDatabase.instance);
-  locator.registerLazySingleton<AuthLocalDataSource>(() => AuthLocalDataSourceImpl(AppDatabase.instance));
+  // ---------------- Core Firebase Instances ----------------
+  locator.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
+  locator.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
+  
+  // ---------------- Local Storage/DB ----------------
+  // 1. Initialize SharedPreferences instance and register its Future
+  final sharedPreferences = await SharedPreferences.getInstance();
+  locator.registerLazySingleton<Future<SharedPreferences>>(() => Future.value(sharedPreferences));
+  
+  // 2. Register AuthLocalDataSource, passing the Future<SharedPreferences> dependency
+  locator.registerLazySingleton<AuthLocalDataSource>(
+    () => AuthLocalDataSourceImpl(locator<Future<SharedPreferences>>()),
+  );
 
+  // ---------------- Network (Kept for other future API calls) ----------------
   const String baseUrl = AppConstants.baseUrl;
-
-  // ---------------- Network ----------------
-  locator.registerLazySingleton<ApiClient>(() => ApiClient(baseUrl: baseUrl));
+  locator.registerLazySingleton<http.Client>(() => http.Client()); 
+  locator.registerLazySingleton<ApiClient>(() => ApiClient(
+    baseUrl: baseUrl,
+    client: locator<http.Client>(),
+  ));
 
   // ---------------- Data Sources ----------------
+  locator.registerLazySingleton<UserRemoteDataSource>(
+    () => UserRemoteDataSource(firestore: locator<FirebaseFirestore>()),
+  );
+  
+  // AuthRemoteDataSource only needs FirebaseAuth for the core credential check
   locator.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthRemoteDataSource(apiClient: locator<ApiClient>()),  // Explicit type for clarity
+    () => AuthRemoteDataSource(
+      auth: locator<FirebaseAuth>(),
+      userDataSource: locator<UserRemoteDataSource>(), 
+      apiClient: locator<ApiClient>(), 
+    ),
   );
 
   // ---------------- Repositories ----------------
-locator.registerLazySingleton<AuthRepository>(
+  locator.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
       remote: locator<AuthRemoteDataSource>(),
       local: locator<AuthLocalDataSource>(),
-      mock: AuthMockDataSource(),
-      useMock: false, // Set to false for real + local storage
     ),
   );
 

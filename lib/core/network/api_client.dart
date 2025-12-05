@@ -5,9 +5,10 @@ import '../utils/failure.dart';
 
 class ApiClient {
   final String baseUrl;
-  final http.Client client;
-  
-  ApiClient({required this.baseUrl}) : client = http.Client();
+  final http.Client client; // Dependency is injected
+
+  // FIX: Constructor now requires the http.Client
+  ApiClient({required this.baseUrl, required this.client}); 
 
 
   Future<dynamic> get(String path, {Map<String, String>? headers}) async {
@@ -46,9 +47,18 @@ class ApiClient {
       if (response.body.isEmpty) return null;
       return jsonDecode(response.body);
     }
+    
+    // Attempt to decode error response body for better debugging
+    String errorMessage = "Request failed";
+    try {
+      final errorJson = jsonDecode(response.body);
+      errorMessage = errorJson['message'] ?? errorMessage;
+    } catch (_) {
+      // Ignore if body isn't JSON
+    }
 
     throw Failure(
-      "Request failed",
+      errorMessage,
       code: status,
     );
   }

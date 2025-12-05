@@ -1,4 +1,3 @@
-// screens/register/widgets/register_form.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,8 +29,10 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   void _submit() {
+    Helpers.dismissKeyboard();
     if (!_formKey.currentState!.validate()) return;
 
+    // Dispatch the registration event to the AuthBloc
     context.read<AuthBloc>().add(
           AuthRegisterRequested(
             name: _nameCtl.text.trim(),
@@ -102,6 +103,7 @@ class _RegisterFormState extends State<RegisterForm> {
             ),
             validator: (v) {
               if (v == null || v.isEmpty) return "Password required";
+              // Firebase Auth requires a minimum of 6 characters
               if (v.length < 6) return "Password must be at least 6 characters";
               return null;
             },
@@ -124,7 +126,7 @@ class _RegisterFormState extends State<RegisterForm> {
                       height: 24,
                       child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3),
                     )
-                  : const Text("Create Account", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  : const Text("Create Account", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
             ),
           ),
 

@@ -4,7 +4,7 @@ import '../../../core/utils/helpers.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
-import '../screens/register_screen.dart';
+import '../screens/register_screen.dart'; // Make sure this screen exists
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -34,9 +34,9 @@ class _LoginFormState extends State<LoginForm> {
     final email = _emailCtl.text.trim();
     final password = _passCtl.text;
 
-    // This now works perfectly with your updated AuthLoginRequested(event)
+    // Dispatch the Login event
     context.read<AuthBloc>().add(
-      AuthLoginRequested(email:email, password:password), // Correct positional usage
+      AuthLoginRequested(email: email, password: password),
     );
   }
 
@@ -45,30 +45,13 @@ class _LoginFormState extends State<LoginForm> {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         final isLoading = state is AuthLoading;
-        final errorMessage = state is AuthFailure ? state.message : null;
 
         return Form(
           key: _formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Show error message from AuthBloc
-              if (errorMessage != null)
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.red.shade50,
-                    border: Border.all(color: Colors.red.shade300),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    errorMessage,
-                    style: TextStyle(color: Colors.red.shade700),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+              // Removed inline error message here as LoginScreen handles it via SnackBar
 
               const SizedBox(height: 8),
 
@@ -89,6 +72,7 @@ class _LoginFormState extends State<LoginForm> {
                   if (!Helpers.isEmailValid(value)) {
                     return 'Enter a valid email';
                   }
+                  // Added a check to ensure it's a FAST domain (optional, but good)
                   if (!value.toLowerCase().contains('fast.edu')) {
                     return 'Use your FAST University email';
                   }
@@ -119,7 +103,7 @@ class _LoginFormState extends State<LoginForm> {
                     return 'Please enter your password';
                   }
                   if (value.length < 4) {
-                    return 'Password too short';
+                    return 'Password too short (must be 6+ for Firebase)';
                   }
                   return null;
                 },
@@ -158,21 +142,23 @@ class _LoginFormState extends State<LoginForm> {
 
               // Register Hint
               TextButton(
-  onPressed: () => Navigator.of(context).push(
-    MaterialPageRoute(builder: (_) => const RegisterScreen()),
-  ),
-  child: const Text.rich(
-    TextSpan(
-      children: [
-        TextSpan(text: "New to FASTConnect? "),
-        TextSpan(
-          text: "Create Account",
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
-      ],
-    ),
-  ),
-),
+                onPressed: isLoading
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                        ),
+                child: const Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(text: "New to FASTConnect? "),
+                      TextSpan(
+                        text: "Create Account",
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         );

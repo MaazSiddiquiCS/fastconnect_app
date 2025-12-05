@@ -1,94 +1,99 @@
 import 'package:meta/meta.dart';
-import 'package:uuid/uuid.dart';
 import '../../../core/utils/failure.dart';
 import '../../../domain/auth/entities/user.dart';
+// NOTE: Assuming this file exists and contains the User entity and AuthResult class
+import '../../../domain/auth/entities/auth_result.dart'; 
 import '../../../domain/auth/repositories/auth_repository.dart';
 import '../datasources/auth_local_data_source.dart';
 import '../datasources/auth_remote_data_source.dart';
-import '../datasources/auth_mock_data_source.dart';
 import '../models/user_model.dart';
+
+// NOTE: Ensure your AuthRepository interface uses Future<AuthResult> for login/register.
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remote;
   final AuthLocalDataSource local;
-  final AuthMockDataSource mock;
-  final bool useMock;
+  
+  // Removed: final AuthMockDataSource mock;
+  // Removed: final bool useMock;
 
   AuthRepositoryImpl({
     required this.remote,
     required this.local,
-    required this.mock,
-    this.useMock = false,
   });
 
+  // --- Login ---
   @override
-  Future<User> login({required String email, required String password}) async {
+  Future<AuthResult> login({required String email, required String password}) async {
     try {
-      User user;
-      if (useMock) {
-        user = await mock.login(email: email, password: password);
-      } else {
-        user = await remote.login(email: email, password: password);
-      }
-
-      // Save to SQLite
-      await local.cacheUser(user as UserModel);
-      return user;
+      // Direct call to the actual remote data source
+      final AuthResponse response = await remote.login(email: email, password: password);
+      
+      // Save user and token locally.
+      await local.cacheUser(response.user, response.accessToken);
+      
+      return AuthResult(
+        user: response.user,
+        accessToken: response.accessToken,
+      );
     } catch (e) {
       rethrow;
     }
   }
 
+  // --- Logout ---
   @override
   Future<void> logout({required String token}) async {
     try {
-      if (!useMock) {
-        await remote.logout(token: token);
-      }
+      // Direct call to the actual remote data source
+      await remote.logout(token: token);
     } finally {
-      await local.deleteUser(); // Always clear local
+      // Always clear local data
+      await local.deleteUser();
+      await local.deleteToken();
     }
   }
 
+  // --- Get Profile ---
   @override
   Future<User> getProfile({required String token}) async {
-    // First try local
+    // 1. Try local cache first
     final localUser = await local.getCurrentUser();
     if (localUser != null) return localUser;
 
-    // Then remote
-    final user = useMock
-        ? await mock.getProfile(token: token)
-        : await remote.getProfile(token: token);
+    // 2. Then remote
+    final UserModel user = await remote.getProfile(token: token);
 
-    await local.cacheUser(user as UserModel);
+    // Cache the retrieved user data and update the token
+    await local.cacheUser(user, token); 
     return user;
   }
-  // data/repositories/auth_repository_impl.dart
+  
+  // --- Register ---
+  @override
+  Future<AuthResult> register({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    try {
+      // Direct call to the actual remote data source
+      final AuthResponse response = await remote.register(
+        name: name,
+        email: email,
+        password: password,
+      );
+      
+      // Save user and token locally.
+      await local.cacheUser(response.user, response.accessToken);
 
-@override
-Future<User> register({
-  required String name,
-  required String email,
-  required String password,
-}) async {
-  try {
-    // For now: local-only registration (no backend)
-    final user = UserModel(
-      id: const Uuid().v4(),
-      name: name,
-      email: email,
-      token: const Uuid().v4(), // fake JWT token
-      rollNumber: "",
-      avatarUrl: null,
-    );
-
-    // Save user locally in SQLite
-    await local.cacheUser(user);
-
-    return user;
-  } catch (e) {
-    throw Failure('Failed to register locally: $e');
+      return AuthResult(
+        user: response.user,
+        accessToken: response.accessToken,
+      );
+    } catch (e) {
+      if (e is Failure) rethrow;
+      throw Failure('Failed to register: $e');
+    }
   }
-}
 }

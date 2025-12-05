@@ -7,9 +7,28 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:481823728180:android:8f096e64574dc7c4ce6061",
+        "mobilesdk_app_id": "1:481823728180:android:84037da83126dfb5ce6061",
         "android_client_info": {
           "package_name": "com.example.fastconnect_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3N9HcEXptx_pIafcCvtxBxEn10OO2fkQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:481823728180:android:48fdb6d3663eb5bece6061",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
         }
       },
       "oauth_client": [],
