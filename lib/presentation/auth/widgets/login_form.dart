@@ -4,7 +4,7 @@ import '../../../core/utils/helpers.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
-import '../screens/register_screen.dart'; // Make sure this screen exists
+import '../screens/register_screen.dart'; 
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -34,7 +34,6 @@ class _LoginFormState extends State<LoginForm> {
     final email = _emailCtl.text.trim();
     final password = _passCtl.text;
 
-    // Dispatch the Login event
     context.read<AuthBloc>().add(
       AuthLoginRequested(email: email, password: password),
     );
@@ -42,6 +41,9 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    // Rely on Theme.of(context).colorScheme.primary for consistency
+    final primaryColor = Theme.of(context).colorScheme.primary; 
+
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         final isLoading = state is AuthLoading;
@@ -51,15 +53,28 @@ class _LoginFormState extends State<LoginForm> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Removed inline error message here as LoginScreen handles it via SnackBar
-
+              // Use Theme Text Styles for Title
+              Text(
+                'Welcome Back',
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: primaryColor,
+                ),
+              ),
               const SizedBox(height: 8),
+              Text(
+                'Sign in to your FASTConnect account',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
 
-              // Email Field
+              const SizedBox(height: 32),
+
+              // Email Field (Relying on InputDecorationTheme)
               TextFormField(
                 controller: _emailCtl,
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
+                // REMOVED ALL INLINE DECORATION STYLING
                 decoration: const InputDecoration(
                   labelText: 'FAST Email',
                   hintText: 'example@fast.edu.pk',
@@ -72,7 +87,6 @@ class _LoginFormState extends State<LoginForm> {
                   if (!Helpers.isEmailValid(value)) {
                     return 'Enter a valid email';
                   }
-                  // Added a check to ensure it's a FAST domain (optional, but good)
                   if (!value.toLowerCase().contains('fast.edu')) {
                     return 'Use your FAST University email';
                   }
@@ -82,12 +96,13 @@ class _LoginFormState extends State<LoginForm> {
 
               const SizedBox(height: 16),
 
-              // Password Field
+              // Password Field (Relying on InputDecorationTheme)
               TextFormField(
                 controller: _passCtl,
                 obscureText: _obscure,
                 textInputAction: TextInputAction.done,
                 onFieldSubmitted: (_) => _submit(),
+                // REMOVED ALL INLINE DECORATION STYLING
                 decoration: InputDecoration(
                   labelText: 'Password',
                   prefixIcon: const Icon(Icons.lock_outline),
@@ -102,8 +117,8 @@ class _LoginFormState extends State<LoginForm> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your password';
                   }
-                  if (value.length < 4) {
-                    return 'Password too short (must be 6+ for Firebase)';
+                  if (value.length < 6) { // Use 6 for consistency with Firebase
+                    return 'Password must be at least 6 characters';
                   }
                   return null;
                 },
@@ -111,30 +126,24 @@ class _LoginFormState extends State<LoginForm> {
 
               const SizedBox(height: 24),
 
-              // Login Button
+              // Login Button (Relying on ElevatedButtonTheme)
               SizedBox(
-                width: double.infinity,
-                height: 50,
+                // Removed redundant width and height, now handled by ElevatedButtonTheme minimumSize
                 child: ElevatedButton(
                   onPressed: isLoading ? null : _submit,
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                  // REMOVED ALL INLINE BUTTON STYLING
+                  // The theme handles shape, size, and text style
                   child: isLoading
                       ? const SizedBox(
                           height: 20,
                           width: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation(Colors.white),
+                            // Use inverse primary color (usually white/black)
+                            valueColor: AlwaysStoppedAnimation(Colors.white), 
                           ),
                         )
-                      : const Text(
-                          'Login',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
+                      : const Text('Login'), // Text style is handled by the Theme
                 ),
               ),
 
@@ -147,13 +156,16 @@ class _LoginFormState extends State<LoginForm> {
                     : () => Navigator.of(context).push(
                           MaterialPageRoute(builder: (_) => const RegisterScreen()),
                         ),
-                child: const Text.rich(
+                child: Text.rich(
                   TextSpan(
+                    style: Theme.of(context).textTheme.bodyMedium, // Use text theme
                     children: [
-                      TextSpan(text: "New to FASTConnect? "),
+                      const TextSpan(text: "New to FASTConnect? "),
                       TextSpan(
                         text: "Create Account",
-                        style: TextStyle(fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: primaryColor), // Highlight using primary color
                       ),
                     ],
                   ),

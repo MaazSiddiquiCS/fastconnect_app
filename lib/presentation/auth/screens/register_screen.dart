@@ -1,4 +1,3 @@
-// screens/register/register_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,23 +16,23 @@ class RegisterScreen extends StatelessWidget {
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthRegisterSuccess) {
-  Helpers.showSnack(context, 'Account created successfully! Please log in.');
-  Navigator.pop(context);
-}
-
+            Helpers.showSnack(context, 'Account created successfully! Please log in.');
+            Navigator.pop(context);
+          }
         },
         builder: (context, state) {
           final isLoading = state is AuthLoading;
 
           return Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 30.0),
+              // The Card now relies on the AppTheme for elevation and shape
               child: Card(
-                elevation: 8,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                // REMOVED: elevation, shape: RoundedRectangleBorder
                 child: Padding(
+                  // Consistent padding for all form cards
                   padding: const EdgeInsets.all(28),
-                  child: RegisterForm(isLoading: isLoading), // ← Pure form
+                  child: RegisterForm(isLoading: isLoading),
                 ),
               ),
             ),

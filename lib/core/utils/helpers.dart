@@ -5,7 +5,8 @@ class Helpers {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(text),
-        behavior: SnackBarBehavior.floating,
+        behavior: SnackBarBehavior.floating,               
+        backgroundColor: Theme.of(context).colorScheme.primary
       ),
     );
   }

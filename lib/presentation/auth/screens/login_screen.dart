@@ -16,12 +16,12 @@ class LoginScreen extends StatelessWidget {
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthFailure) {
-            // Display error message via SnackBar
             Helpers.showSnack(context, state.message);
           }
           if (state is AuthAuthenticated) {
+            // Use Theme-defined colors for better consistency
             Helpers.showSnack(context, 'Welcome back, ${state.user.fullName}!');
-            // Navigate to home screen on successful authentication
+            
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (_) => const HomeScreen()),
@@ -30,11 +30,14 @@ class LoginScreen extends StatelessWidget {
         },
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            // Use dynamic padding that shrinks on small screens if necessary
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 30.0),
+            // The Card now relies on the AppTheme for elevation and shape
             child: Card(
-              elevation: 4,
+              // REMOVED: elevation, which is now defined in CardTheme
               child: Padding(
-                padding: const EdgeInsets.all(20),
+                // Consistent padding for all form cards
+                padding: const EdgeInsets.all(28),
                 child: LoginForm(),
               ),
             ),

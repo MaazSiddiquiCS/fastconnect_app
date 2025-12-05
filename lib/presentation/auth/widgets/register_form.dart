@@ -32,7 +32,6 @@ class _RegisterFormState extends State<RegisterForm> {
     Helpers.dismissKeyboard();
     if (!_formKey.currentState!.validate()) return;
 
-    // Dispatch the registration event to the AuthBloc
     context.read<AuthBloc>().add(
           AuthRegisterRequested(
             name: _nameCtl.text.trim(),
@@ -44,41 +43,50 @@ class _RegisterFormState extends State<RegisterForm> {
 
   @override
   Widget build(BuildContext context) {
+    // Rely on Theme.of(context).colorScheme.primary for consistency
+    final primaryColor = Theme.of(context).colorScheme.primary; 
+
     return Form(
       key: _formKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Logo / Title
-          const Text(
+          // Logo / Title (Using Theme Text Styles)
+          Text(
             'FASTConnect',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+              fontWeight: FontWeight.bold,
+              color: primaryColor,
+            ),
           ),
           const SizedBox(height: 8),
-          Text('Create your account', style: TextStyle(fontSize: 16, color: Colors.grey[600])),
+          Text(
+            'Create your account', 
+            style: Theme.of(context).textTheme.bodyMedium
+          ),
           const SizedBox(height: 32),
 
-          // Full Name
+          // Full Name (Relying on InputDecorationTheme)
           TextFormField(
             controller: _nameCtl,
             textCapitalization: TextCapitalization.words,
+            // REMOVED ALL INLINE DECORATION STYLING
             decoration: const InputDecoration(
               labelText: "Full Name",
               prefixIcon: Icon(Icons.person),
-              border: OutlineInputBorder(),
             ),
             validator: (v) => v?.trim().isEmpty ?? true ? "Name required" : null,
           ),
           const SizedBox(height: 16),
 
-          // Email
+          // Email (Relying on InputDecorationTheme)
           TextFormField(
             controller: _emailCtl,
             keyboardType: TextInputType.emailAddress,
+            // REMOVED ALL INLINE DECORATION STYLING
             decoration: const InputDecoration(
               labelText: "Email",
               prefixIcon: Icon(Icons.email),
-              border: OutlineInputBorder(),
             ),
             validator: (v) {
               if (v == null || v.trim().isEmpty) return "Email required";
@@ -88,14 +96,14 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           const SizedBox(height: 16),
 
-          // Password
+          // Password (Relying on InputDecorationTheme)
           TextFormField(
             controller: _passCtl,
             obscureText: _obscurePassword,
+            // REMOVED ALL INLINE DECORATION STYLING
             decoration: InputDecoration(
               labelText: "Password",
               prefixIcon: const Icon(Icons.lock),
-              border: const OutlineInputBorder(),
               suffixIcon: IconButton(
                 icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
                 onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
@@ -103,30 +111,27 @@ class _RegisterFormState extends State<RegisterForm> {
             ),
             validator: (v) {
               if (v == null || v.isEmpty) return "Password required";
-              // Firebase Auth requires a minimum of 6 characters
               if (v.length < 6) return "Password must be at least 6 characters";
               return null;
             },
           ),
           const SizedBox(height: 32),
 
-          // Submit Button
+          // Submit Button (Relying on ElevatedButtonTheme)
           SizedBox(
-            width: double.infinity,
-            height: 50,
             child: ElevatedButton(
               onPressed: widget.isLoading ? null : _submit,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
+              // REMOVED ALL INLINE BUTTON STYLING
               child: widget.isLoading
                   ? const SizedBox(
                       width: 24,
                       height: 24,
-                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3),
+                      child: CircularProgressIndicator(
+                        color: Colors.white, 
+                        strokeWidth: 3
+                      ),
                     )
-                  : const Text("Create Account", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                  : const Text("Create Account"),
             ),
           ),
 
@@ -135,7 +140,10 @@ class _RegisterFormState extends State<RegisterForm> {
           // Login link
           TextButton(
             onPressed: widget.isLoading ? null : () => Navigator.pop(context),
-            child: const Text("Already have an account? Log in"),
+            child: Text(
+              "Already have an account? Log in",
+              style: TextStyle(color: primaryColor), // Highlight using primary color
+            ),
           ),
         ],
       ),

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../auth/bloc/auth_bloc.dart';
+import 'wigdets/logout_button.dart'; // Import the new widget
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,16 +29,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Get colors from the theme for consistent look
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("FASTConnect"),
+        title: Image.asset(
+                    '../../../assets/images/fastconnect_logo.png',
+                    width: 90, 
+                    height: 90,
+                  ),
         centerTitle: true,
+        // Using theme colors for a distinct AppBar color (optional, but consistent)
+        backgroundColor: colorScheme.primary, 
+        foregroundColor: colorScheme.onPrimary,
+        
+        actions: const [
+          LogoutButton(),
+        ],
       ),
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
-        type: BottomNavigationBarType.fixed,
+        // Removed explicit color settings, now relying on BottomNavigationBarTheme defined in AppTheme
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Feed"),
           BottomNavigationBarItem(icon: Icon(Icons.group), label: "Societies"),

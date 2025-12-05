@@ -32,60 +32,55 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   // ──────────────────────────────────────────────────────────────
   // Register Requested
   // ──────────────────────────────────────────────────────────────
-  Future<void> _onRegisterRequested(
-    AuthRegisterRequested event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit(AuthLoading());
+Future<void> _onRegisterRequested(
+  AuthRegisterRequested event,
+  Emitter<AuthState> emit,
+) async {
+  emit(AuthLoading());
 
-    // Use Case returns Either<Failure, AuthResult>
-    final result = await registerUseCase(
-      name: event.name,
-      email: event.email,
-      password: event.password,
-    );
+  final result = await registerUseCase(
+    name: event.name,
+    email: event.email,
+    password: event.password,
+  );
 
-    result.fold(
-      (failure) => emit(AuthFailure(failure.message)),
-      (authResult) async {
-        // FIX: Extract the token from AuthResult and save it
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('jwt_token', authResult.accessToken);
-        
-        // Emit success with the User entity
-        emit(AuthRegisterSuccess(authResult.user));
-      },
-    );
+  if (result.isLeft()) {
+    final failure = result.swap().getOrElse(() => Failure('Unknown failure'));
+    emit(AuthFailure(failure.message));
+    return;
   }
+
+  final authResult = result.getOrElse(() => throw Exception());
+
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('jwt_token', authResult.accessToken);
+
+  emit(AuthRegisterSuccess(authResult.user));
+}
+
 
   // ──────────────────────────────────────────────────────────────
   // App Started → Check if user is already logged in
   // ──────────────────────────────────────────────────────────────
-  Future<void> _onStarted(AuthStarted event, Emitter<AuthState> emit) async {
-    emit( AuthLoading());
+Future<void> _onStarted(AuthStarted event, Emitter<AuthState> emit) async {
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('jwt_token');
 
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('jwt_token');
-
-      if (token == null || token.isEmpty) {
-        return emit( AuthUnauthenticated());
-      }
-
-      // If we have a token, try to fetch the full profile
-      final user = await getUserUseCase(token: token);
-      emit(AuthAuthenticated(user));
-    } on Failure catch (f) {
-      // If fetching profile fails (e.g., token expired), clear session
-      await _clearToken();
-      emit(AuthFailure(f.message));
-      emit( AuthUnauthenticated());
-    } catch (e) {
-      await _clearToken();
-      emit( AuthFailure('Session expired. Please login again.'));
-      emit( AuthUnauthenticated());
+    if (token == null || token.isEmpty) {
+      emit(AuthUnauthenticated());
+      return;
     }
+
+    final user = await getUserUseCase(token: token);
+    emit(AuthAuthenticated(user));
+
+  } catch (e) {
+    await _clearToken();
+    emit(AuthUnauthenticated());
   }
+}
+
 
   // ──────────────────────────────────────────────────────────────
   // Login Requested
@@ -119,21 +114,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   // ──────────────────────────────────────────────────────────────
   // Logout Requested
   // ──────────────────────────────────────────────────────────────
-  Future<void> _onLogoutRequested(
-    AuthLogoutRequested event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit( AuthLoading());
+Future<void> _onLogoutRequested(
+  AuthLogoutRequested event,
+  Emitter<AuthState> emit,
+) async {
+  await _clearToken();
+  emit(AuthUnauthenticated());
+}
 
-    try {
-      await logoutUseCase(token: event.token);
-    } catch (_) {
-      // Ignore logout errors — we want to log out anyway
-    } finally {
-      await _clearToken();
-      emit( AuthUnauthenticated());
-    }
-  }
   
 
   // ──────────────────────────────────────────────────────────────
