@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
         centerTitle: true,
         // Using theme colors for a distinct AppBar color (optional, but consistent)
-        backgroundColor: colorScheme.primary, 
+        backgroundColor: Colors.indigo, 
         foregroundColor: colorScheme.onPrimary,
         
         actions: const [
@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
-        // Removed explicit color settings, now relying on BottomNavigationBarTheme defined in AppTheme
+        type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Feed"),
           BottomNavigationBarItem(icon: Icon(Icons.group), label: "Societies"),

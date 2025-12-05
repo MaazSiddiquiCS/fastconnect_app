@@ -79,9 +79,11 @@ class AppTheme {
       // 5. BottomNavigationBar Theme
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         selectedItemColor: base.colorScheme.primary,
-        unselectedItemColor: Colors.grey,
+        // Use onSurfaceVariant for better contrast than generic Colors.grey
+        unselectedItemColor: base.colorScheme.onSurfaceVariant, 
         type: BottomNavigationBarType.fixed,
-        backgroundColor: base.colorScheme.surface,
+        // FIX: Use surfaceContainerHighest for a visually elevated, less "very dark" background
+        backgroundColor: base.colorScheme.surfaceContainerHighest, 
       ),
     );
   }
