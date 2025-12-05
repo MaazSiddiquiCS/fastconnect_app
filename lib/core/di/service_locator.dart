@@ -22,6 +22,7 @@ import '../../domain/feed/usecases/get_feed_posts.dart';
 import '../../domain/feed/usecases/like_post.dart';
 import '../../domain/feed/usecases/unlike_post.dart';
 import '../../domain/feed/usecases/comment_on_post.dart';
+import '../../domain/feed/usecases/upload_post.dart';
 import '../../presentation/feed/bloc/feed_bloc.dart';
 // import '../database/app_database.dart'; // REMOVED: No longer using sqflite
 import '../network/api_client.dart';
@@ -99,6 +100,7 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton<LikePost>(() => LikePost(locator<FeedRepository>()));
   locator.registerLazySingleton<UnlikePost>(() => UnlikePost(locator<FeedRepository>()));
   locator.registerLazySingleton<CommentOnPost>(() => CommentOnPost(locator<FeedRepository>()));
+  locator.registerLazySingleton<UploadPost>(() => UploadPost(locator<FeedRepository>()));
 
   // ---------------- Bloc ----------------
   locator.registerFactory<AuthBloc>(() => AuthBloc(
@@ -114,5 +116,6 @@ Future<void> setupLocator() async {
     likePost: locator<LikePost>(),
     unlikePost: locator<UnlikePost>(),
     commentOnPost: locator<CommentOnPost>(),
+    uploadPost: locator<UploadPost>(),
   ));
 }

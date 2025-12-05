@@ -24,6 +24,14 @@ abstract class FeedRemoteDataSource {
     required String userId,
     required String comment,
   });
+
+  Future<FeedPostModel> uploadPost({
+    required String userId,
+    required String username,
+    required String userImage,
+    required String postImage,
+    required String caption,
+  });
 }
 
 class FeedRemoteDataSourceImpl implements FeedRemoteDataSource {
@@ -123,6 +131,37 @@ class FeedRemoteDataSourceImpl implements FeedRemoteDataSource {
       });
     } catch (e) {
       throw Exception('Failed to comment on post: $e');
+    }
+  }
+
+  @override
+  Future<FeedPostModel> uploadPost({
+    required String userId,
+    required String username,
+    required String userImage,
+    required String postImage,
+    required String caption,
+  }) async {
+    try {
+      final docRef = await firestore.collection('posts').add({
+        'userId': userId,
+        'username': username,
+        'userImage': userImage,
+        'postImage': postImage,
+        'caption': caption,
+        'likes': 0,
+        'comments': 0,
+        'createdAt': DateTime.now().toIso8601String(),
+        'likedBy': [],
+      });
+
+      final doc = await docRef.get();
+      return FeedPostModel.fromJson({
+        'id': doc.id,
+        ...doc.data() as Map<String, dynamic>,
+      });
+    } catch (e) {
+      throw Exception('Failed to upload post: $e');
     }
   }
 }

@@ -3,6 +3,7 @@ import '../../../domain/feed/usecases/get_feed_posts.dart';
 import '../../../domain/feed/usecases/like_post.dart';
 import '../../../domain/feed/usecases/unlike_post.dart';
 import '../../../domain/feed/usecases/comment_on_post.dart';
+import '../../../domain/feed/usecases/upload_post.dart';
 import 'feed_event.dart';
 import 'feed_state.dart';
 
@@ -11,6 +12,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   final LikePost likePost;
   final UnlikePost unlikePost;
   final CommentOnPost commentOnPost;
+  final UploadPost uploadPost;
 
   static const int _pageSize = 10;
 
@@ -19,12 +21,14 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     required this.likePost,
     required this.unlikePost,
     required this.commentOnPost,
+    required this.uploadPost,
   }) : super(const FeedInitial()) {
     on<FetchFeedPosts>(_onFetchFeedPosts);
     on<LikePostEvent>(_onLikePost);
     on<UnlikePostEvent>(_onUnlikePost);
     on<CommentPostEvent>(_onCommentPost);
     on<RefreshFeed>(_onRefreshFeed);
+    on<UploadPostEvent>(_onUploadPost);
   }
 
   Future<void> _onFetchFeedPosts(
@@ -103,6 +107,25 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       ));
     } catch (e) {
       emit(FeedError(message: e.toString()));
+    }
+  }
+
+  Future<void> _onUploadPost(
+    UploadPostEvent event,
+    Emitter<FeedState> emit,
+  ) async {
+    try {
+      emit(const PostUploadLoading());
+      final newPost = await uploadPost(
+        userId: event.userId,
+        username: event.username,
+        userImage: event.userImage,
+        postImage: event.postImage,
+        caption: event.caption,
+      );
+      emit(PostUploadSuccess(post: newPost));
+    } catch (e) {
+      emit(PostUploadError(message: e.toString()));
     }
   }
 }

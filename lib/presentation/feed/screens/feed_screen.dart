@@ -8,6 +8,7 @@ import '../widgets/post_tile.dart';
 import '../widgets/loading_widget.dart';
 import '../widgets/error_widget.dart' as feed_widgets;
 import '../widgets/empty_widget.dart';
+import 'upload_post_screen.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key? key}) : super(key: key);
@@ -53,48 +54,67 @@ class _FeedScreenState extends State<FeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        _currentOffset = 0;
-        context.read<FeedBloc>().add(const RefreshFeed());
-      },
-      child: BlocBuilder<FeedBloc, FeedState>(
-        builder: (context, state) {
-          if (state is FeedLoading && _currentOffset == 0) {
-            return const LoadingWidget();
-          } else if (state is FeedError) {
-            return feed_widgets.FeedErrorWidget(
-              message: state.message,
-              onRetry: () {
-                _currentOffset = 0;
-                context.read<FeedBloc>().add(
-                  const FetchFeedPosts(limit: _pageSize, offset: 0),
-                );
-              },
-            );
-          } else if (state is FeedLoaded) {
-            if (state.posts.isEmpty && _currentOffset == 0) {
-              return const EmptyWidget();
-            }
-
-            return ListView.builder(
-              controller: _scrollController,
-              itemCount: state.posts.length +
-                  (state.hasReachedMax ? 0 : 1),
-              itemBuilder: (context, index) {
-                if (index < state.posts.length) {
-                  return PostTile(post: state.posts[index]);
-                } else {
-                  return const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
-            );
-          }
-          return const LoadingWidget();
+    return Scaffold(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _currentOffset = 0;
+          context.read<FeedBloc>().add(const RefreshFeed());
         },
+        child: BlocBuilder<FeedBloc, FeedState>(
+          builder: (context, state) {
+            if (state is FeedLoading && _currentOffset == 0) {
+              return const LoadingWidget();
+            } else if (state is FeedError) {
+              return feed_widgets.FeedErrorWidget(
+                message: state.message,
+                onRetry: () {
+                  _currentOffset = 0;
+                  context.read<FeedBloc>().add(
+                    const FetchFeedPosts(limit: _pageSize, offset: 0),
+                  );
+                },
+              );
+            } else if (state is FeedLoaded) {
+              if (state.posts.isEmpty && _currentOffset == 0) {
+                return const EmptyWidget();
+              }
+
+              return ListView.builder(
+                controller: _scrollController,
+                itemCount: state.posts.length +
+                    (state.hasReachedMax ? 0 : 1),
+                itemBuilder: (context, index) {
+                  if (index < state.posts.length) {
+                    return PostTile(post: state.posts[index]);
+                  } else {
+                    return const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              );
+            }
+            return const LoadingWidget();
+          },
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigate to upload screen
+          // Note: You'll need to pass user info - for now using placeholder values
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const UploadPostScreen(
+                userId: 'current_user_id',
+                username: 'Current User',
+                userImage: 'https://via.placeholder.com/150',
+              ),
+            ),
+          );
+        },
+        child: const Icon(Icons.add_a_photo),
       ),
     );
   }

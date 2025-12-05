@@ -79,4 +79,26 @@ class FeedRepositoryImpl implements FeedRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<FeedPost> uploadPost({
+    required String userId,
+    required String username,
+    required String userImage,
+    required String postImage,
+    required String caption,
+  }) async {
+    try {
+      final model = await remoteDataSource.uploadPost(
+        userId: userId,
+        username: username,
+        userImage: userImage,
+        postImage: postImage,
+        caption: caption,
+      );
+      return model.toEntity();
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

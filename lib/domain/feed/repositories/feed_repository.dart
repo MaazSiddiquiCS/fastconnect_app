@@ -23,4 +23,12 @@ abstract class FeedRepository {
     required String userId,
     required String comment,
   });
+
+  Future<FeedPost> uploadPost({
+    required String userId,
+    required String username,
+    required String userImage,
+    required String postImage,
+    required String caption,
+  });
 }

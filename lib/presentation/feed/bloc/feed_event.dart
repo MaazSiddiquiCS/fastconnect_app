@@ -55,3 +55,22 @@ class CommentPostEvent extends FeedEvent {
 class RefreshFeed extends FeedEvent {
   const RefreshFeed();
 }
+
+class UploadPostEvent extends FeedEvent {
+  final String userId;
+  final String username;
+  final String userImage;
+  final String postImage;
+  final String caption;
+
+  const UploadPostEvent({
+    required this.userId,
+    required this.username,
+    required this.userImage,
+    required this.postImage,
+    required this.caption,
+  });
+
+  @override
+  List<Object> get props => [userId, username, userImage, postImage, caption];
+}

@@ -47,3 +47,25 @@ class FeedError extends FeedState {
   @override
   List<Object> get props => [message];
 }
+
+class PostUploadLoading extends FeedState {
+  const PostUploadLoading();
+}
+
+class PostUploadSuccess extends FeedState {
+  final FeedPost post;
+
+  const PostUploadSuccess({required this.post});
+
+  @override
+  List<Object> get props => [post];
+}
+
+class PostUploadError extends FeedState {
+  final String message;
+
+  const PostUploadError({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
