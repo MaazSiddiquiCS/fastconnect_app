@@ -18,6 +18,17 @@ import '../../domain/auth/usecases/get_logged_in_user.dart';
 import '../../domain/auth/usecases/register.dart';
 import '../../domain/reels/repositories/reel_repository.dart';
 import '../../domain/reels/usecases/get_popular_reels.dart';
+// Feed imports
+import '../../data/feed/datasources/feed_remote_data_source.dart';
+import '../../data/feed/repositories/feed_repository_impl.dart';
+import '../../domain/feed/repositories/feed_repository.dart';
+import '../../domain/feed/usecases/get_feed_posts.dart';
+import '../../domain/feed/usecases/like_post.dart';
+import '../../domain/feed/usecases/unlike_post.dart';
+import '../../domain/feed/usecases/comment_on_post.dart';
+import '../../domain/feed/usecases/upload_post.dart';
+import '../../presentation/feed/bloc/feed_bloc.dart';
+// import '../database/app_database.dart'; // REMOVED: No longer using sqflite
 import '../network/api_client.dart';
 import '../utils/constants.dart';
 import '../../presentation/auth/bloc/auth_bloc.dart';
@@ -88,6 +99,26 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton<GetLoggedInUser>(() => GetLoggedInUser(locator<AuthRepository>()));
   locator.registerLazySingleton<Register>(() => Register(locator<AuthRepository>()));
 
+  // Feed Data Sources
+  locator.registerLazySingleton<FeedRemoteDataSource>(
+    () => FeedRemoteDataSourceImpl(firestore: locator<FirebaseFirestore>()),
+  );
+
+  // Feed Repositories
+  locator.registerLazySingleton<FeedRepository>(
+    () {
+      final impl = FeedRepositoryImpl(remoteDataSource: locator<FeedRemoteDataSource>());
+      return impl as FeedRepository;
+    },
+  );
+
+  // Feed Use Cases
+  locator.registerLazySingleton<GetFeedPosts>(() => GetFeedPosts(locator<FeedRepository>()));
+  locator.registerLazySingleton<LikePost>(() => LikePost(locator<FeedRepository>()));
+  locator.registerLazySingleton<UnlikePost>(() => UnlikePost(locator<FeedRepository>()));
+  locator.registerLazySingleton<CommentOnPost>(() => CommentOnPost(locator<FeedRepository>()));
+  locator.registerLazySingleton<UploadPost>(() => UploadPost(locator<FeedRepository>()));
+
   // ---------------- Bloc ----------------
   locator.registerFactory<AuthBloc>(() => AuthBloc(
       loginUseCase: locator<Login>(),
@@ -132,4 +163,12 @@ final prefs = await SharedPreferences.getInstance();
 locator.registerLazySingleton<SharedPreferences>(() => prefs);
 locator.registerFactory<ReelsBloc>(() => ReelsBloc(getPopularReels: GetPopularReels(locator<ReelsRepository>()), prefs: locator<SharedPreferences>()));
 
+  // Feed Bloc
+  locator.registerFactory<FeedBloc>(() => FeedBloc(
+    getFeedPosts: locator<GetFeedPosts>(),
+    likePost: locator<LikePost>(),
+    unlikePost: locator<UnlikePost>(),
+    commentOnPost: locator<CommentOnPost>(),
+    uploadPost: locator<UploadPost>(),
+  ));
 }
