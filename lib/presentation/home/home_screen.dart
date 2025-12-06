@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../auth/bloc/auth_bloc.dart';
+import '../feed/bloc/feed_bloc.dart';
+import '../feed/screens/feed_screen.dart';
 import 'wigdets/logout_button.dart'; // Import the new widget
+import '../../core/di/service_locator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,7 +17,10 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [
-    const Center(child: Text("Feed Screen Placeholder")),
+    BlocProvider<FeedBloc>(
+      create: (_) => locator<FeedBloc>(),
+      child: const FeedScreen(),
+    ),
     const Center(child: Text("Societies Screen Placeholder")),
     const Center(child: Text("Reels Screen Placeholder")),
     const Center(child: Text("Notifications Screen Placeholder")),
