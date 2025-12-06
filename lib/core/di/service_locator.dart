@@ -2,20 +2,22 @@ import 'package:get_it/get_it.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart'; // NEW IMPORT
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import '../../data/auth/datasources/auth_local_data_source.dart';
 import '../../data/auth/datasources/auth_remote_data_source.dart';
 import '../../data/auth/datasources/user_remote_data_source.dart';
-// import '../../data/user/datasources/user_remote_data_source.dart'; // NEW
 import '../../data/auth/repositories/auth_repository_impl.dart';
+import '../../data/reels/datasources/reels_remote_data_source.dart';
+import '../../data/reels/repositories/reel_repository.dart';
 import '../../domain/auth/repositories/auth_repository.dart';
 import '../../domain/auth/usecases/login.dart';
 import '../../domain/auth/usecases/logout.dart';
 import '../../domain/auth/usecases/get_logged_in_user.dart';
 import '../../domain/auth/usecases/register.dart';
-// import '../database/app_database.dart'; // REMOVED: No longer using sqflite
+import '../../domain/reels/repositories/reel_repository.dart';
+import '../../domain/reels/usecases/get_popular_reels.dart';
 import '../network/api_client.dart';
 import '../utils/constants.dart';
 import '../../presentation/auth/bloc/auth_bloc.dart';
@@ -27,6 +29,11 @@ import '../../domain/profile/usecases/upload_cover_photo.dart';
 import '../../data/profile/datasources/profile_remote_data_source.dart';
 import '../../data/profile/repositories/profile_repository_impl.dart';
 import '../../presentation/profile/bloc/profile_bloc.dart';
+
+// --- NEW REELS IMPORTS ---
+import '../../data/reels/repositories/reel_repository_impl.dart';
+import '../../presentation/reels/bloc/reel_bloc.dart';
+// -------------------------
 
 final locator = GetIt.instance;
 
@@ -83,10 +90,10 @@ Future<void> setupLocator() async {
 
   // ---------------- Bloc ----------------
   locator.registerFactory<AuthBloc>(() => AuthBloc(
-        loginUseCase: locator<Login>(),
-        logoutUseCase: locator<Logout>(),
-        getUserUseCase: locator<GetLoggedInUser>(),
-        registerUseCase: locator<Register>()
+      loginUseCase: locator<Login>(),
+      logoutUseCase: locator<Logout>(),
+      getUserUseCase: locator<GetLoggedInUser>(),
+      registerUseCase: locator<Register>()
       ));
 
   // ---------------- Profile Module ----------------
@@ -114,4 +121,15 @@ Future<void> setupLocator() async {
     uploadProfilePictureUseCase: locator<UploadProfilePicture>(),
     uploadCoverPhotoUseCase: locator<UploadCoverPhoto>(),
   ));
+  
+  // ---------------- Reels Module ----------------
+// Reels DI
+//locator.registerLazySingleton<ApiClient>(() => ApiClient(baseUrl: AppConstants.pexelsBaseUrl, client: locator<http.Client>()));
+locator.registerLazySingleton<ReelsRemoteDataSource>(() => ReelsRemoteDataSourceImpl(client: locator<ApiClient>()));
+locator.registerLazySingleton<ReelsRepository>(() => ReelsRepositoryImpl(remote: locator<ReelsRemoteDataSource>()));
+// SharedPreferences already registered? else:
+final prefs = await SharedPreferences.getInstance();
+locator.registerLazySingleton<SharedPreferences>(() => prefs);
+locator.registerFactory<ReelsBloc>(() => ReelsBloc(getPopularReels: GetPopularReels(locator<ReelsRepository>()), prefs: locator<SharedPreferences>()));
+
 }
