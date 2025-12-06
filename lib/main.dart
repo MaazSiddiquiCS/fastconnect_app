@@ -9,7 +9,8 @@ import 'core/di/service_locator.dart';
 import 'presentation/auth/bloc/auth_bloc.dart';
 import 'presentation/auth/bloc/auth_event.dart';
 import 'presentation/auth/screens/splash_screen.dart';
-import 'presentation/profile/bloc/profile_bloc.dart'; // <-- New import for ProfileBloc
+import 'presentation/profile/bloc/profile_bloc.dart';
+import 'presentation/reels/bloc/reel_bloc.dart'; // <-- New import for ProfileBloc
 
 void main() async {
  WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +44,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<ProfileBloc>(
           create: (_) => locator<ProfileBloc>(),
         ),
+        BlocProvider<ReelsBloc>(
+  create: (_) => locator<ReelsBloc>(),
+),
         // Add other BLoCs like FeedBloc, ConnectionsBloc, etc., here as they are implemented
       ],
    child: const FASTConnectMaterialApp(),
